@@ -1,10 +1,20 @@
-ORG 0x7c00
+ORG 0
 BITS 16
 
 ; command to run nasm -f bin ./boot.asm -o  ./boot.bin
 ; qemu-system-x86_64 -hda ./boot.bin
 
+jmp 0x7c0: start
 start:
+        cli ; Clear interrupts
+        mov ax, 0x7c0
+        mov ds, ax
+        mov es, ax
+
+        mov ax, 0x00
+        mov ss, ax
+        mov sp, 0x7c00
+        sti ; Enable Interrupts
         mov si, message
         call print
         jmp $
