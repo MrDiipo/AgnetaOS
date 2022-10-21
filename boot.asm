@@ -35,6 +35,7 @@ step2:
         jc error
 
         mov si, buffer
+
         call print
 
         jmp $
