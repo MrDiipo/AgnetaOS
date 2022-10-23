@@ -30,7 +30,7 @@ step2:
 
 .load_protected:
         cli
-        ldgt[gdt_descriptor]
+        lgdt[gdt_descriptor]
         mov eax, cr0
         or eax, 0x1
         mov cr0, eax
@@ -72,7 +72,7 @@ gdt_descriptor:
         dw gdt_start
 
 
-[BITS_32]
+[BITS 32]
 load32:
         mov ax, DATA_SEG
         mov ds, ax
