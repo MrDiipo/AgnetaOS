@@ -34,8 +34,8 @@ step2:
         mov eax, cr0
         or eax, 0x1
         mov cr0, eax
-       ; jmp CODE_SEG : load32
-       jmp $
+        jmp CODE_SEG : load32
+;       jmp $
 
 
 ; Global Descriptor Table (GDT)
@@ -72,6 +72,25 @@ gdt_descriptor:
         dw gdt_end - gdt_start - 1
         dw gdt_start
 
+
+[BITS 32]
+load32:
+        mov eax, 1
+        mov ecx, 100
+        mov edi, 0x0100000
+        call ata_lba_read
+
+ata_lba_read:
+        mov ebx, eax, ; Back up the LBA
+        ; Send the highest 8 bits of the lba to hard disk controller
+        shr eax, 24
+        mov dx, 0x1f6
+        out dx, al
+        ; Finished sending the highest 8 bits of the lba
+
+        mov eax, ecx
+        mov dx, 0x1F2
+        out dx, al
 
 
 times 510-($ - $$) db 0
