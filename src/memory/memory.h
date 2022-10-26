@@ -1,0 +1,10 @@
+
+#ifndef AGNETAOS_MEMORY_H
+#define AGNETAOS_MEMORY_H
+
+
+#include <stddef.h>
+
+void* memset(void* ptr, int c, size_t size);
+
+#endif //AGNETAOS_MEMORY_H

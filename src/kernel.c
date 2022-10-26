@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include <stdint.h>
 #include <stddef.h>
+#include "idt/idt.h"
 
 
 uint16_t* video_mem = 0;
@@ -60,6 +61,7 @@ void print(const char* str) {
 
 void kernel_main() {
     terminal_initialize();
-    terminal_writechar('A', 15);
-    terminal_writechar('B', 15);
+//    terminal_writechar('A', 15);
+//    terminal_writechar('B', 15);
+    idt_init();
 }
