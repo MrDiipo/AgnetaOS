@@ -23,9 +23,4 @@ _start:
         call kernel_main
         jmp $
 
-
-problem:
-        mov eax, 0
-        div eax
-
 times 512 - ($ - $$) db 0
