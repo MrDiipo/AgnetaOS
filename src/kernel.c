@@ -61,6 +61,7 @@ void print(const char* str) {
 
 void kernel_main() {
     terminal_initialize();
+    print("Hello world!\nTest!");
 //    terminal_writechar('A', 15);
 //    terminal_writechar('B', 15);
     idt_init();
