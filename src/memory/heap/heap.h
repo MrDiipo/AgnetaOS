@@ -23,4 +23,6 @@ struct heap {
     struct heap_table* table;
     void* saddr; // start address
 };
+
+int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* table);
 #endif //AGNETAOS_HEAP_H
