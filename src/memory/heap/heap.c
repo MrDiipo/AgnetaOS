@@ -40,3 +40,26 @@ int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* tabl
     memset(table->entries, HEAP_BLOCK_TABLE_ENTRY_FREE, table_size);
     out: return res;
 }
+
+static uint32_t heap_align_value_to_upper(uint32_t val) {
+    if ((val % AGNETAOS_HEAP_BLOCK_SIZE) == 0) {
+        return val;
+    }
+
+    val = (val - (val % AGNETAOS_HEAP_BLOCK_SIZE));
+    val += AGNETAOS_HEAP_BLOCK_SIZE;
+    return val;
+}
+
+void heap_malloc_blocks(struct heap* heap, uint32_t total_blocks) {
+
+}
+void* heap_malloc(struct heap* heap, size_t size) {
+    size_t aligned_size = heap_align_value_to_upper(size);
+    uint32_t total_blocks = aligned_size / AGNETAOS_HEAP_BLOCK_SIZE;
+    return 0;
+}
+
+void heap_free(struct heap* heap, void* ptr) {
+
+}
