@@ -51,13 +51,54 @@ static uint32_t heap_align_value_to_upper(uint32_t val) {
     return val;
 }
 
-void heap_malloc_blocks(struct heap* heap, uint32_t total_blocks) {
-
+static int heap_get_entry_type(HEAP_BLOCK_TABLE_ENTRY entry) {
+    return entry & 0x0f;
 }
+
+int heap_get_start_block(struct heap* heap, uint32_t total_blocks) {
+    struct heap_table* table = heap->table;
+    int bc = 0;
+    int bs = -1;
+
+    for (size_t i = 0; i< table->total; i++) {
+        if (heap_get_entry_type(table->entries[i]) != HEAP_BLOCK_TABLE_ENTRY_FREE) {
+            bc = 0;
+            bs = -1;
+            continue;
+        }
+        // If this is the first block
+        if (bs == -1) {
+            bs = 1;
+        }
+        bc++;
+        if (bc == total_blocks) {
+            break;
+        }
+    }
+    if (bs == -1) {
+        return -ENOMEM;
+    }
+    return bs;
+}
+
+void heap_malloc_blocks(struct heap* heap, uint32_t total_blocks) {
+    void* address = 0;
+
+    int start_block = heap_get_start_block(heap, total_blocks);
+    if (start_block < 0){
+        goto out;
+    }
+    address = heap_block_to_Address(heap, start_block);
+
+    // Mark the block as taken
+    heap_mark_blocks_taken(heap, start_block, total_blocks);
+    out: return address;
+}
+
 void* heap_malloc(struct heap* heap, size_t size) {
     size_t aligned_size = heap_align_value_to_upper(size);
     uint32_t total_blocks = aligned_size / AGNETAOS_HEAP_BLOCK_SIZE;
-    return 0;
+    return heap_malloc_blocks(heap, total_blocks);
 }
 
 void heap_free(struct heap* heap, void* ptr) {

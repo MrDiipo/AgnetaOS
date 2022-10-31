@@ -6,5 +6,6 @@
 #define EIO 1
 
 #define EINVARG 2
+#define ENOMEM 3
 
 #endif //AGNETAOS_STATUS_H
