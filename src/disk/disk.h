@@ -1,0 +1,5 @@
+
+#ifndef AGNETAOS_DISK_H
+#define AGNETAOS_DISK_H
+
+#endif //AGNETAOS_DISK_H
