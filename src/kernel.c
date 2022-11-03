@@ -4,6 +4,7 @@
 #include "idt/idt.h"
 #include "memory/heap/kheap.h"
 #include "memory/paging/paging.h"
+#include "disk/disk.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -55,7 +56,7 @@ size_t strlen(const char* str) {
 
 void print(const char* str) {
     size_t len = strlen(str);
-    for (int i = 0; i < str; i++) {
+    for (int i = 0; i < len; i++) {
         terminal_writechar(str[i], 15);
     }
 }
@@ -67,6 +68,10 @@ void kernel_main() {
 
     // initialize the heap
     kheap_init();
+
+    // search and initialize the disk
+    disk_search_and_init();
+
     // initialize the interrupt descriptor table
     idt_init();
     // setup paging
