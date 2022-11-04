@@ -45,7 +45,7 @@ struct disk* disk_get(int index) {
 }
 
 int disk_read_block(struct disk* idisk, unsigned int lba, int total, void* buf) {
-    if (idisk != disk) {
+    if (idisk != &disk) {
         return -EIO;
     }
     return disk_read_sector(lba, total, buf);

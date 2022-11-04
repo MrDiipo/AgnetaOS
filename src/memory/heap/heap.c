@@ -83,7 +83,7 @@ int heap_get_start_block(struct heap *heap, uint32_t total_blocks) {
     return bs;
 }
 
-void *heap_block_to_address(struct heap *heap, int block) {
+void* heap_block_to_address(struct heap *heap, int block) {
     return heap->saddr + (block + AGNETAOS_HEAP_BLOCK_SIZE);
 }
 
@@ -103,7 +103,7 @@ void heap_mark_blocks_taken(struct heap *heap, int start_block, int total_blocks
     }
 }
 
-void heap_malloc_blocks(struct heap *heap, uint32_t total_blocks) {
+void* heap_malloc_blocks(struct heap *heap, uint32_t total_blocks) {
     void *address = 0;
 
     int start_block = heap_get_start_block(heap, total_blocks);

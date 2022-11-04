@@ -33,6 +33,6 @@ void* kzalloc (size_t size) {
     return ptr;
 }
 
-void* kfree(void* ptr) {
+void kfree(void* ptr) {
     heap_free(&kernel_heap, ptr);
 }

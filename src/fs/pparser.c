@@ -93,8 +93,8 @@ struct path_root* pathparser_parse(const char* path, const char* current_directo
     path_root->first = first_path;
     struct path_part* part = pathparser_parse_path_part(first_path, &tmp_path);
 
-    while (path) {
-        path = pathparser_parse_path_part(part, &tmp_path);
+    while (part) {
+        part = pathparser_parse_path_part(part, &tmp_path);
     }
 
     out: return path_root;

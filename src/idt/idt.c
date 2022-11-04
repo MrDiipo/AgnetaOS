@@ -11,7 +11,7 @@ extern void idt_load(struct idtr_desc* ptr);
 extern void init21h();
 extern void no_interrupt();
 
-void init21h_handler() {
+void int21h_handler() {
     print("Keyboard press!\n");
     outb(0x20, 0x20);
 }
@@ -44,5 +44,5 @@ void idt_init() {
     }
 
     idt_set(0, idt_zero);
-    idt_set(0x21, init21h);
+    idt_set(0x21, int21h_handler);
 }

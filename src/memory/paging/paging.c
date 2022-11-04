@@ -14,14 +14,14 @@ struct paging_4gb_chunk* paging_new_4gb(uint32_t flags) {
     for(int i = 0; i < PAGING_TOTAL_ENTRIES_PER_TABLE; i++) {
         uint32_t* entry = kzalloc(sizeof(uint32_t) * PAGING_TOTAL_ENTRIES_PER_TABLE);
         for (int j = 0; j < PAGING_TOTAL_ENTRIES_PER_TABLE; j++) {
-            entry[b] = (offset + (b * PAGING_PAGE_SIZE)) | flags;
+            entry[j] = (offset + (j * PAGING_PAGE_SIZE)) | flags;
         }
         offset += (PAGING_TOTAL_ENTRIES_PER_TABLE * PAGING_PAGE_SIZE);
         directory[i] = (uint32_t) entry | flags | PAGING_IS_WRITEABLE;
     }
 
     struct paging_4gb_chunk* chunk_4gb = kzalloc(sizeof(struct paging_4gb_chunk));
-    chunk_4gb = directory;
+    chunk_4gb->directory_entry = directory;
     return chunk_4gb;
 }
 
@@ -62,4 +62,6 @@ int paging_set(uint32_t* directory, void* virt, uint32_t val) {
     uint32_t entry = directory[directory_index];
     uint32_t* table = (uint32_t*) (entry & 0xfffff000);
     table[table_index] = val;
+
+    return 0;
 }

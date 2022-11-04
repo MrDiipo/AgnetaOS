@@ -6,10 +6,10 @@
 #include "../memory/heap/kheap.h"
 #include "../kernel.h"
 
-struct filesystem* filesystems[AGNETAOS_MAX_FILESYSTEMS];
-struct file_descriptor* file_descriptors[AGNETAOS_MAX_FILE_DESCRIPTORS];
+struct filesystem *filesystems[AGNETAOS_MAX_FILESYSTEMS];
+struct file_descriptor *file_descriptors[AGNETAOS_MAX_FILE_DESCRIPTORS];
 
-static struct filesystem** fs_get_free_filesystem() {
+static struct filesystem **fs_get_free_filesystem() {
     int i = 0;
     for (i = 0; i < AGNETAOS_MAX_FILESYSTEMS; i++) {
         if (filesystems[i] == 0) {
@@ -20,23 +20,23 @@ static struct filesystem** fs_get_free_filesystem() {
 }
 
 // allows drivers to insert their own filesystems
-void fs_insert_filesystem(struct filesystem* filesystem) {
-    struct filesystem** fs;
+void fs_insert_filesystem(struct filesystem *filesystem) {
+    struct filesystem **fs;
     fs = fs_get_free_filesystem();
     if (!fs) {
         print("Problem inserting filesystem");
-        while (1){};
+        while (1) {};
     }
     *fs = filesystem;
 }
 
-static void fs_static_load() {
-    fs_insert_filesystem(fat16_init());
-}
+//static void fs_static_load() {
+//    fs_insert_filesystem(fat16_init());
+//}
 
 void fs_load() {
     memset(filesystems, 0, sizeof(filesystems));
-    fs_static_load();
+//    fs_static_load();
 }
 
 void fs_init() {
@@ -44,11 +44,11 @@ void fs_init() {
     fs_load();
 }
 
-static init file_new_descriptor(struct file_descriptor** desc_out) {
+static int file_new_descriptor(struct file_descriptor **desc_out) {
     int res = -ENOMEM;
     for (int i = 0; i < AGNETAOS_MAX_FILE_DESCRIPTORS; i++) {
         if (file_descriptors[i] == 0) {
-            struct file_descriptor* desc = kzalloc(sizeof(file_descriptors));
+            struct file_descriptor *desc = kzalloc(sizeof(file_descriptors));
             // Descriptors start at 1
             desc->index = i + 1;
             file_descriptors[i] = desc;
@@ -60,7 +60,7 @@ static init file_new_descriptor(struct file_descriptor** desc_out) {
     return res;
 }
 
-static struct file_descriptor* file_get_descriptor(int fd) {
+static struct file_descriptor *file_get_descriptor(int fd) {
     if (fd <= 0 || fd >= AGNETAOS_MAX_FILE_DESCRIPTORS) {
         return 0;
     }
@@ -69,17 +69,17 @@ static struct file_descriptor* file_get_descriptor(int fd) {
     return file_descriptors[index];
 }
 
-struct filesystem* fs_resolve(struct disk* disk) {
-    struct filesystem* fs = 0;
+struct filesystem *fs_resolve(struct disk *disk) {
+    struct filesystem *fs = 0;
     for (int i = 0; i < AGNETAOS_MAX_FILESYSTEMS; i++) {
         if (filesystems[i] != 0 && filesystems[i]->resolve(disk) == 0) {
             fs = filesystems[i];
             break;
         }
-        return fs;
     }
+    return fs;
 }
 
-int fopen(const char* filename, const char* mode) {
+int fopen(const char *filename, const char *mode) {
     return -EIO;
 }
