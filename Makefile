@@ -51,6 +51,9 @@ all:	./bin/boot.bin ./bin/kernel.bin
 ./build/fs/pparser.o: ./src/fs/pparser.c
 	i686-elf-gcc $(INCLUDES)  -I./src/fs $(FLAGS) -std=gnu99 -c  ./src/fs/pparser.c -o ./build/fs/pparser.o
 
+./build/fs/file.o: ./src/fs/file.c
+	i686-elf-gcc $(INCLUDES)  -I./src/fs $(FLAGS) -std=gnu99 -c  ./src/fs/file.c -o ./build/fs/file.o
+
 ./build/string/string.o: ./src/string/string.c
 	i686-elf-gcc $(INCLUDES) -I./src/string  $(FLAGS) -std=gnu99 -c  ./src/string/string.c -o ./build/string/string.o
 

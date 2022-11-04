@@ -2,6 +2,8 @@
 #ifndef AGNETAOS_DISK_H
 #define AGNETAOS_DISK_H
 
+#include "../fs/file.h"
+
 typedef unsigned int AGNETAOS_DISK_TYPE;
 // represents a real physical hard disk
 #define AGNETAOS_DISK_TYPE_REAL 0
@@ -10,6 +12,7 @@ struct disk {
     AGNETAOS_DISK_TYPE type;
     int sector_size;
 
+    struct filesystem* filesystem;
 };
 
 void disk_search_and_init();
