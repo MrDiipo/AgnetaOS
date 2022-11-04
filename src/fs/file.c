@@ -4,6 +4,7 @@
 #include "../memory/memory.h"
 #include "../status.h"
 #include "../memory/heap/kheap.h"
+#include "../kernel.h"
 
 struct filesystem* filesystems[AGNETAOS_MAX_FILESYSTEMS];
 struct file_descriptor* file_descriptors[AGNETAOS_MAX_FILE_DESCRIPTORS];
