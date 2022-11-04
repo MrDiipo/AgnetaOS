@@ -1,4 +1,4 @@
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o .build/idt/idt.o .build/memory/memory.o  ./build/io/io.asm.o ./build/memory/heap/heap.o ./build/memory/heap/kheap.o  ./build/memory/paging/paging.o ./build/memory/paging/paging.asm.o ./build/disk/disk.o ./build/fs/pparser.o  ./build/string/string.o
+FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o .build/idt/idt.o .build/memory/memory.o ./build/disk/streamer.o ./build/io/io.asm.o ./build/memory/heap/heap.o ./build/memory/heap/kheap.o  ./build/memory/paging/paging.o ./build/memory/paging/paging.asm.o ./build/disk/disk.o ./build/fs/pparser.o  ./build/string/string.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fnobuiltin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 all:	./bin/boot.bin ./bin/kernel.bin
@@ -25,34 +25,37 @@ all:	./bin/boot.bin ./bin/kernel.bin
 	nasm -f elf -g ./src/idt/idt.asm -o ./build/idt/idt.asm.o
 
 ./build/idt/idt.o: ./src/idt/idt.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/idt -std=gnu99 -c  ./src/idt/idt.c -o ./build/idt/idt.o
+	i686-elf-gcc $(INCLUDES) -I./src/idt $(FLAGS)  -std=gnu99 -c  ./src/idt/idt.c -o ./build/idt/idt.o
 
 ./build/memory/memory.o: ./src/memory/memory.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/memory -std=gnu99 -c  ./src/memory/memory.c -o ./build/memory/memory.o
+	i686-elf-gcc $(INCLUDES)  -I./src/memory $(FLAGS) -std=gnu99 -c  ./src/memory/memory.c -o ./build/memory/memory.o
 
 ./build/io/io.asm.o: ./src/io/io.asm
 	nasm -f elf -g ./src/io/io.asm -o ./build/io/io.asm.o
 
 ./build/memory/heap/heap.o: ./src/memory/heap/heap.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/memory/heap -std=gnu99 -c  ./src/memory/heap/heap.c -o ./build/memory/heap/heap.o
+	i686-elf-gcc $(INCLUDES) -I./src/memory/heap $(FLAGS)  -std=gnu99 -c  ./src/memory/heap/heap.c -o ./build/memory/heap/heap.o
 
 ./build/memory/heap/kheap.o: ./src/memory/heap/kheap.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/memory/heap -std=gnu99 -c  ./src/memory/heap/kheap.c -o ./build/memory/heap/kheap.o
+	i686-elf-gcc $(INCLUDES) -I./src/memory/heap  $(FLAGS)  -std=gnu99 -c  ./src/memory/heap/kheap.c -o ./build/memory/heap/kheap.o
 
 ./build/memory/paging/paging.o: ./src/memory/paging/paging.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/memory/paging -std=gnu99 -c  ./src/memory/paging/paging.c -o ./build/memory/paging/paging.o
+	i686-elf-gcc $(INCLUDES)  -I./src/memory/paging $(FLAGS) -std=gnu99 -c  ./src/memory/paging/paging.c -o ./build/memory/paging/paging.o
 
 ./build/memory/paging.asm.o: ./src/memory/paging/paging.asm
 	nasm -f elf -g ./src/memory/paging/paging.asm -o ./build/memory/paging/paging.asm.o
 
 ./build/disk/disk.o: ./src/disk/disk.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/disk/disk -std=gnu99 -c  ./src/disk/disk.c -o ./build/disk/disk.o
+	i686-elf-gcc $(INCLUDES) -I./src/disk  $(FLAGS) -std=gnu99 -c  ./src/disk/disk.c -o ./build/disk/disk.o
 
 ./build/fs/pparser.o: ./src/fs/pparser.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/fs -std=gnu99 -c  ./src/fs/pparser.c -o ./build/fs/pparser.o
+	i686-elf-gcc $(INCLUDES)  -I./src/fs $(FLAGS) -std=gnu99 -c  ./src/fs/pparser.c -o ./build/fs/pparser.o
 
 ./build/string/string.o: ./src/string/string.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -I./src/string -std=gnu99 -c  ./src/string/string.c -o ./build/string/string.o
+	i686-elf-gcc $(INCLUDES) -I./src/string  $(FLAGS) -std=gnu99 -c  ./src/string/string.c -o ./build/string/string.o
+
+./build/disk/steamer.o: ./src/disk/streamer.c
+	i686-elf-gcc $(INCLUDES)  -I./src/disk $(FLAGS) -std=gnu99 -c  ./src/disk/streamer.c -o ./build/disk/streamer.o
 
 clean:
 	rm -rf ./bin/boot.bin
