@@ -9,5 +9,6 @@
 
 #define EINVARG 2
 #define ENOMEM 3
+#define EFSNOTUS 5
 
 #endif //AGNETAOS_STATUS_H
