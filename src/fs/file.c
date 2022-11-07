@@ -5,6 +5,7 @@
 #include "../status.h"
 #include "../memory/heap/kheap.h"
 #include "../kernel.h"
+#include "fat/fat16.h"
 
 struct filesystem *filesystems[AGNETAOS_MAX_FILESYSTEMS];
 struct file_descriptor *file_descriptors[AGNETAOS_MAX_FILE_DESCRIPTORS];
@@ -20,7 +21,7 @@ static struct filesystem **fs_get_free_filesystem() {
 }
 
 // allows drivers to insert their own filesystems
-void fs_insert_filesystem(struct filesystem *filesystem) {
+void fs_insert_filesystem(struct filesystem* filesystem) {
     struct filesystem **fs;
     fs = fs_get_free_filesystem();
     if (!fs) {
@@ -30,13 +31,13 @@ void fs_insert_filesystem(struct filesystem *filesystem) {
     *fs = filesystem;
 }
 
-//static void fs_static_load() {
-//    fs_insert_filesystem(fat16_init());
-//}
+static void fs_static_load() {
+    fs_insert_filesystem(fat16_init);
+}
 
 void fs_load() {
     memset(filesystems, 0, sizeof(filesystems));
-//    fs_static_load();
+    fs_static_load();
 }
 
 void fs_init() {
