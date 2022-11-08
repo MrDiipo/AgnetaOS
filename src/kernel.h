@@ -10,4 +10,8 @@
 void print(const char* str);
 void kernel_main();
 
+#define ERROR(value) (void*)(value)
+#define ERROR_I(value) (int)(value)
+#define ISERR(value) ((int)value < 0)
+
 #endif //AGNETAOS_KERNEL_H

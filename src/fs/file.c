@@ -6,6 +6,9 @@
 #include "../memory/heap/kheap.h"
 #include "../kernel.h"
 #include "fat/fat16.h"
+#include "../disk/disk.h"
+#include "../string/string.h"
+#include "../kernel.h"
 
 struct filesystem *filesystems[AGNETAOS_MAX_FILESYSTEMS];
 struct file_descriptor *file_descriptors[AGNETAOS_MAX_FILE_DESCRIPTORS];
@@ -81,6 +84,63 @@ struct filesystem *fs_resolve(struct disk *disk) {
     return fs;
 }
 
-int fopen(const char *filename, const char *mode) {
-    return -EIO;
+FILE_MODE file_get_mode_by_string(const char* str) {
+    FILE_MODE mode = FILE_MODE_INVALID;
+    if (strncmp(str, "r", 1) == 0) {
+        mode = FILE_MODE_READ;
+    }
+    else if (strncmp(str, "w", 1) == 0) {
+        mode = FILE_MODE_WRITE;
+    }
+    else if (strncmp(str, "a", 1) == 0) {
+        mode = FILE_MODE_APPEND;
+    }
+    return mode;
+}
+
+int fopen(const char *filename, const char *mode_string) {
+    int res = 0;
+    struct path_root* root_path = pathparser_parse(filename, NULL);
+    if (!root_path) {
+        res = -EINVARG;
+        goto out;
+    }
+    // wew cannot just have a root path
+    if (!root_path->first) {
+
+    }
+    // ensure the disk we are reading from exists
+    struct disk* disk = disk_get(root_path->drive_no);
+    if (!disk) {
+        res = -EIO;
+        goto out;
+    }
+    if (!disk->filesystem) {
+        res = -EIO;
+        goto out;
+    }
+
+    FILE_MODE mode = file_get_mode_by_string(mode_string);
+    if (mode == FILE_MODE_INVALID) {
+        return -EINVARG;
+        goto out;
+    }
+    void* descriptor_private_data = disk->filesystem->open(disk, root_path->first, mode); // calls fat16 open
+    if (ISERR(descriptor_private_data)) {
+        res = ERROR_I(descriptor_private_data);
+        goto out;
+    }
+    struct file_descriptor* desc = 0;
+    res = file_new_descriptor(&desc);
+    if (res < 0) {
+        goto out;
+    }
+    desc->filesystem = disk->filesystem;
+    desc->private = descriptor_private_data;
+    desc->disk = disk;
+    res = desc->index;
+
+    out:
+        if (res < 0) res = 0; // fopen should not return negative values
+        return res;
 }
