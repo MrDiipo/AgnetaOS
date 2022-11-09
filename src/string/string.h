@@ -13,6 +13,8 @@ char* strcpy (char* dest, const char* src);
 
 int strncmp(const char* s1, const char* s2, int n);
 int to_numeric_digit (char c);
+
+// compares the s1 and s2 by ignoring the cases
 int istrncmp(const char* s1, const char* s2, int n);
 
 int strnlen_terminator(const char* str, int max, char terminator);

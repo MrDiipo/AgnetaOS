@@ -20,3 +20,17 @@ int memcmp(void* s1, void* s2, int count) {
     }
     return 0;
 }
+
+void* memcpy(void* dst, const void* src, unsigned int cnt) {
+    char* pszDest = (char*)dst;
+    const char* pszSource = (const char*) src;
+
+    if ((pszDest != NULL) && (pszSource != NULL)) {
+        while (cnt) {
+            // copy byte by byte
+            *(pszDest++) = *(pszSource++);
+            --cnt;
+        }
+    }
+    return dst;
+}
