@@ -463,6 +463,7 @@ struct fat_item *fat16_find_item_in_directory(struct disk *disk, struct fat_dire
             f_item = fat16_new_fat_item_for_directory_item(disk, &directory->item[i]);
         }
     }
+    return f_item;
 }
 
 struct fat_item *fat16_get_directory_entry(struct disk *disk, struct path_part *path) {
