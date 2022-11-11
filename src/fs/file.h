@@ -33,6 +33,7 @@ typedef void* (*FS_OPEN_FUNCTION) (struct disk* disk, struct path_part* path, FI
 typedef int (*FS_READ_FUNCTION) (struct  disk* disk, void* private, uint32_t size, , uint32_t nmemb, char* out);
 
 typedef int (*FS_RESOLVE_FUNCTION) (struct disk* disk);
+typedef int (*FS_CLOSE_FUNCTION) (void* private);
 typedef int (*FS_SEEK_FUNCTION) (void* private, uint32_t offset, FILE_SEEK_MODE seek_mode);
 
 struct file_stat {
@@ -49,6 +50,7 @@ struct filesystem {
     FS_READ_FUNCTION  read;
     FS_SEEK_FUNCTION  seek;
     FS_STAT_FUNCTION stat;
+    FS_CLOSE_FUNCTION close;
 
     char name[20];
 };
@@ -68,8 +70,10 @@ struct file_descriptor {
 void fs_init();
 int fopen(const char* filename, const char* mode_string);
 int fread(void* ptr, uint32_t size, uint32_t nmemb, int fd);
+
 int fseek(int fd, int offset, FILE_SEEK_MODE whence);
 int fstat(int fd, struct file_stat* stat);
+int fclose(int fd);
 
 void fs_insert_filesystem(struct filesystem* filesystem);
 
