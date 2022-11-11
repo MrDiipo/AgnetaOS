@@ -8,6 +8,7 @@
 #define AGNETAOS_MAX_PATH  108
 
 void print(const char* str);
+void panic(const char* msg);
 void kernel_main();
 
 #define ERROR(value) (void*)(value)
