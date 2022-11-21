@@ -30,4 +30,8 @@
 #define USER_DATA_SEGMENT 0x23
 
 #define USER_CODE_SEGMENT 0x1b
+// A little bit small. Would increase it later on
+#define AGNETAOS_MAX_PROGRAM_ALLOCATIONS 1024
+#define AGNETAOS_MAX_PROCESSES 12
+
 #endif //AGNETAOS_CONFIG_H

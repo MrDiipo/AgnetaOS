@@ -68,7 +68,7 @@ struct file_descriptor {
 };
 
 void fs_init();
-int fopen(const char* filename, const char* mode_string);
+int fopen(const char *filename, const char *mode_string);
 int fread(void* ptr, uint32_t size, uint32_t nmemb, int fd);
 
 int fseek(int fd, int offset, FILE_SEEK_MODE whence);

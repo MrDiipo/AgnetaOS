@@ -18,4 +18,6 @@ int to_numeric_digit (char c);
 int istrncmp(const char* s1, const char* s2, int n);
 
 int strnlen_terminator(const char* str, int max, char terminator);
+
+char* strncpy(char* destination, const char* source, size_t num);
 #endif //AGNETAOS_STRING_H
