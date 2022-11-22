@@ -4,8 +4,9 @@
 #include "../kernel.h"
 #include "../memory/heap/kheap.h"
 //#include "../memory/paging/paging.h"
+#include "process.h"
 
-int task_init(struct task *task);
+int task_init(struct task *task, struct process* process);
 int task_free(struct task* task);
 
 // The current task that is running
@@ -15,7 +16,7 @@ struct task *current_task = 0;
 struct task *task_tail = 0;
 struct task *task_head = 0;
 
-struct task *task_new() {
+struct task *task_new(struct process* process) {
     int res = 0;
     struct task *task = kzalloc(sizeof(struct task));
 
@@ -23,7 +24,7 @@ struct task *task_new() {
         res = -ENOMEM;
         goto out;
     }
-    res = task_init(task);
+    res = task_init(task, process);
     if (res != AGNETAOS_ALL_OK) {
         goto out;
     }
@@ -81,7 +82,7 @@ int task_free(struct task* task){
     return 0;
 }
 
-int task_init(struct task *task) {
+int task_init(struct task *task, struct process* process) {
     memset(task, 0, sizeof(struct task));
     // Map the entire 4gb address space to its self
     task->page_directory = paging_new_4gb(PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL); // read only address space
@@ -91,4 +92,6 @@ int task_init(struct task *task) {
     task->registers.ip = AGNETAOS_PROGRAM_VIRTUAL_ADDRESS;
     task->registers.ss = USER_DATA_SEGMENT;
     task->registers.esp = AGNEAOS_PROGRAM_VIRTUAL_STACK_ADDRESS_START;
+
+    task->process = process;
 }
