@@ -6,6 +6,11 @@ all:	./bin/boot.bin ./bin/kernel.bin user_programs
 		dd if=./bin/boot.bin >> ./bin/os.bin
 		dd if=./bin/kernel.bin >> ./bin/os.bin
 		dd if=/dev/zero bs=512 count=100 >> ./bin/os.bin
+		sudo mount -t vfat ./bin/os.bin /mnt/d
+		# Copy a file over
+		sudo cp ./hello.txt /mnt/d
+		sudo cp ./programs/blank/blank.bin
+		sudo unmount /mnt/d
 
 
 ./bin/kernel.bin: $(FILES)

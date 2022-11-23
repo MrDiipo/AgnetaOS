@@ -12,6 +12,10 @@
 #include "memory/memory.h"
 #include "task/tss.h"
 
+#include "task/task.h"
+#include "task/process.h"
+#include "status.h"
+
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
 uint16_t terminal_col = 0;
@@ -63,7 +67,7 @@ static struct paging_4gb_chunk* kernel_chunk = 0;
 
 void panic(const char* msg) {
     print(msg);
-    while (1){};
+    while (1){}
 }
 struct tss tss;
 struct gdt gdt_real[AGNETAOS_TOTAL_GDT_SEGMENTS];
@@ -109,6 +113,13 @@ void kernel_main() {
     paging_switch(paging_4gb_chunk_get_directory(kernel_chunk));
     // enable paging
     enable_paging();
-    // enable the system interrupts
-    enable_interrupts();
+
+    struct process* process = 0;
+    int res = process_load("0:/blank.bin", &process);
+    if (res != AGNETAOS_ALL_OK) {
+        panic("Failed to load blank.bin\n");
+    }
+    task_run_first_ever_task();
+
+    while (1) {}
 }
