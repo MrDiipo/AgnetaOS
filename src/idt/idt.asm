@@ -44,6 +44,11 @@ isr80h_wrapper:
         ; INTERRUPT FRAME START
         ; ALREADY PUSHED TO US BY THE PROCESSOR UPON ENTRY
         ; TO THIS INTERRUPT
+        ; uint32_t ip
+        ; uint32_t cs
+        ; uint32_t flags
+        ; uint32_t sp;
+        ; uint32_t ss;
         ; Pushes the general purpose registers
         pushad
 
