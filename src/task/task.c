@@ -6,8 +6,11 @@
 //#include "../memory/paging/paging.h"
 #include "process.h"
 
-int task_init(struct task *task, struct process* process);
-int task_free(struct task* task);
+#include "../idt/idt.h"
+
+int task_init(struct task *task, struct process *process);
+
+int task_free(struct task *task);
 
 // The current task that is running
 struct task *current_task = 0;
@@ -16,7 +19,7 @@ struct task *current_task = 0;
 struct task *task_tail = 0;
 struct task *task_head = 0;
 
-struct task *task_new(struct process* process) {
+struct task *task_new(struct process *process) {
     int res = 0;
     struct task *task = kzalloc(sizeof(struct task));
 
@@ -48,14 +51,14 @@ struct task *task_new(struct process* process) {
     };
 }
 
-struct task* task_get_next() {
+struct task *task_get_next() {
     if (!current_task->next) {
         return task_head;
     }
     return current_task->next;
 }
 
-static void task_list_remove(struct task* task) {
+static void task_list_remove(struct task *task) {
     if (task->prev) {
         task->prev->next = task->next;
     }
@@ -74,7 +77,7 @@ struct task *task_current() {
     return current_task;
 }
 
-int task_free(struct task* task){
+int task_free(struct task *task) {
     paging_free_4gb(task->page_directory);
     task_list_remove(task);
 
@@ -83,7 +86,7 @@ int task_free(struct task* task){
     return 0;
 }
 
-int task_switch(struct task* task) {
+int task_switch(struct task *task) {
     current_task = task;
     paging_switch(task->page_directory);
     return 0;
@@ -97,6 +100,29 @@ int task_page() {
     return 0;
 }
 
+void task_save_state(struct task *task, struct interrupt_frame *frame) {
+    // All about a program's state is the state of the registers
+    task->registers.ip = frame->ip;
+    task->registers.cs = frame->cs;
+    task->registers.flags = frame->flags;
+    task->registers.ss = frame->ss;
+    task->registers.ebp = frame->ebp;
+
+    task->registers.ebx = frame->ebx;
+    task->registers.ecx = frame->ecx;
+    task->registers.edi = frame->edi;
+    task->registers.edx = frame->edx;
+    task->registers.esi = frame->esi;
+}
+
+void task_current_save_state(struct interrupt_frame *frame) {
+    if (!task_current()) {
+        panic("No current task to save\n");
+    }
+    struct task *task = task_current();
+    task_save_state(task, frame);
+}
+
 void task_run_first_ever_task() {
     if (!current_task) {
         panic("task_run_first_ever_task(): No current task exists");
@@ -105,7 +131,7 @@ void task_run_first_ever_task() {
     task_return(&task_head->registers);
 }
 
-int task_init(struct task *task, struct process* process) {
+int task_init(struct task *task, struct process *process) {
     memset(task, 0, sizeof(struct task));
     // Map the entire 4gb address space to its self
     task->page_directory = paging_new_4gb(PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL); // read only address space
@@ -118,7 +144,7 @@ int task_init(struct task *task, struct process* process) {
     task->registers.esp = AGNEAOS_PROGRAM_VIRTUAL_STACK_ADDRESS_START;
 
     task->process = process;
-    return  0;
+    return 0;
 }
 
 

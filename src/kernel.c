@@ -69,6 +69,12 @@ void panic(const char* msg) {
     print(msg);
     while (1){}
 }
+
+void kernel_page() {
+    kernel_registers();
+    paging_switch(kernel_chunk);
+}
+
 struct tss tss;
 struct gdt gdt_real[AGNETAOS_TOTAL_GDT_SEGMENTS];
 struct gdt_structured gdt_structured[AGNETAOS_TOTAL_GDT_SEGMENTS] = {
