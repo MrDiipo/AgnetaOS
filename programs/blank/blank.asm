@@ -1,9 +1,11 @@
 [BITS 32]
 
 section .asm
-global_start
+global _start
 
 _start:
 
-label:
-        jmp_label
+        mov eax, 0
+        int 0x80
+        jmp $
+
