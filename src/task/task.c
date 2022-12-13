@@ -101,6 +101,12 @@ int task_page() {
     return 0;
 }
 
+int task_page_task(struct task* task) {
+    user_registers();
+    paging_switch(task->page_directory);
+    return 0;
+}
+
 void task_save_state(struct task *task, struct interrupt_frame *frame) {
     // All about a program's state is the state of the registers
     task->registers.ip = frame->ip;
@@ -116,19 +122,19 @@ void task_save_state(struct task *task, struct interrupt_frame *frame) {
     task->registers.esi = frame->esi;
 }
 
-int copy_string_to_task(struct task* task, void* virtual, void* phys, int max) {
+int copy_string_from_task(struct task* task, void* virtual, void* phys, int max) {
     if (max >= PAGING_PAGE_SIZE) {
         return -EINVARG;
     }
-    int res = 0
-            char* tmp = kzalloc(max);
+    int res = 0;
+    char* tmp = kzalloc(max);
     if (!tmp) {
         res = -ENOMEM;
         goto out;
     }
     uint32_t * task_directory = task->page_directory->directory_entry;
     uint32_t  old_entry = paging_get(task_directory, tmp);
-    paging_map(task_directory, tmp, tmp, PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
+    paging_map(task->page_directory, tmp, tmp, PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
     paging_switch(task->page_directory);
 
     strncpy(tmp, virtual, max);
@@ -177,6 +183,20 @@ int task_init(struct task *task, struct process *process) {
 
     task->process = process;
     return 0;
+}
+
+void* task_get_stack_item(struct task* task, int index) {
+    void* result  = 0;
+    uint32_t * sp_ptr = (uint32_t*) task->registers.esp;
+
+    // Switch to the given tasks page
+    task_page_task(task);
+
+    result = (void *) sp_ptr[index];
+    // Switch back to the kernel page
+    kernel_page();
+
+    return result;
 }
 
 

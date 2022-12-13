@@ -37,4 +37,6 @@ int paging_map(struct paging_4gb_chunk* directory, void* virt, void* phys, int f
 
 void* paging_align_address(void* ptr);
 
+uint32_t paging_get(uint32_t* directory, void* virt);
+
 #endif //AGNETAOS_PAGING_H
