@@ -88,7 +88,6 @@ struct gdt_structured gdt_structured[AGNETAOS_TOTAL_GDT_SEGMENTS] = {
 };
 void kernel_main() {
     terminal_initialize();
-    print("Hello world!\nTest!");
 
     memset(gdt_real, 0x00, sizeof(gdt_real));
     gdt_structured_to_gdt(gdt_real, gdt_structured, AGNETAOS_TOTAL_GDT_SEGMENTS);
