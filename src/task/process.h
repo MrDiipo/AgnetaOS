@@ -26,7 +26,16 @@ struct process {
 
     // The size of data pointed to by "ptr"
     uint32_t  size;
+
+    struct keyboard_buffer {
+        char buffer[AGNETAOS_KEYBOARD_BUFFER_SIZE];
+        int tail;
+        int head;
+    } keyboard;
 };
+
+struct process *process_current();
+int process_get(int process_id);
 
 int process_load_for_slot(const char *filename, struct process **process, int process_slot);
 int process_load(const char* filename, struct process** process);

@@ -35,7 +35,7 @@ void fs_insert_filesystem(struct filesystem* filesystem) {
 }
 
 static void fs_static_load() {
-    fs_insert_filesystem(fat16_init);
+    fs_insert_filesystem(fat16_init());
 }
 
 void fs_load() {
@@ -155,7 +155,7 @@ int fstat(int fd, struct file_stat* stat) {
     struct  file_descriptor*desc = file_get_descriptor(fd);
     if (!desc) {
         res = -EIO;
-        goto ou;
+        goto out;
     }
     res = desc->filesystem->stat(desc->disk, desc->private, stat);
     out: return res;
