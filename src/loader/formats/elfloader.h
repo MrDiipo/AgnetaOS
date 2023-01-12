@@ -38,4 +38,13 @@ struct elf_file {
      void* physical_end_address;
 };
 
+int elf_load(const char* filename, struct elf_file** file_out);
+
+void *eld_virtual_base(struct elf_file *file);
+void *elf_virtual_end(struct elf_file *file);
+void *elf_phys_base(struct elf_file *file);
+void *elf_phys_end(struct elf_file *file);
+
+void elf_close(struct  elf_file* file);
+
 #endif //AGNETAOS_ELFLOADER_H

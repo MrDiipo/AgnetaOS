@@ -5,6 +5,12 @@
 #include <stdint.h>
 #include "../config.h"
 #include "task.h"
+#include "../loader/formats/elfloader.h"
+
+#define PROCESS_FILETYPE_ELF 0
+#define PROCESS_FILETYPE_BINARY 1
+
+typedef unsigned char PROCESS_FILETYPE;
 
 struct process {
     // The process id
@@ -17,9 +23,14 @@ struct process {
     // The memory (malloc) allocations of the process
     void* allocations[AGNETAOS_MAX_PROGRAM_ALLOCATIONS];
 
-    // The physical pointer to the process memory
-    // This assumes
-    void* ptr;
+    PROCESS_FILETYPE  filetype;
+
+    union {
+        // The physical pointer to the process memory
+        // This assumes
+        void *ptr;
+        struct elf_file* elf_file;
+    };
 
     // The physical pointer to the stack memory
     uint32_t stack;
